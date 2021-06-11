@@ -9,12 +9,17 @@ plan: enable-compute
 apply:
 	terraform apply ${TF_PLAN}
 
+delete-vms:
+	terraform destroy -target=module.gce_instances
+
 clean: enable-compute
 	terraform destroy
 
 auth:
 	gcloud auth application-default login
-	
+
+vms: plan apply
+
 init:
 	terraform init
 
