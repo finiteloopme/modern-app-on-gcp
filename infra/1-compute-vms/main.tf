@@ -4,11 +4,7 @@ module "gce_instances"{
   project_id        = var.project_id
   instance_name     = each.value["name"]
   machine_type      = each.value["machine_type"]
-  instance_tags     = [
-    "http",
-    "https",
-    "modern-gcp-app",
-  ]
+  instance_tags     = split(",", each.value["instance_tags"])
 
-  startup_script    = each.value.script=="" ? file("${path.module}/scripts/install-docker.sh") : format("%s\n%s", file("${path.module}/scripts/install-docker.sh"), file("${path.module}/${each.value.script}"))
+  # startup_script    = each.value.script=="" ? file("${path.module}/scripts/install-docker.sh") : format("%s\n%s", file("${path.module}/scripts/install-docker.sh"), file("${path.module}/${each.value.script}"))
 }

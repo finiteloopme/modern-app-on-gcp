@@ -1,0 +1,42 @@
+steps:
+- id: "debug-gcloud"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  # - "ls"
+  # - "-al"
+  - "./setup-platform.sh"
+#   - --version
+# - id: "get-modern-app-vms"
+#   name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+#   entrypoint: "gcloud"
+#   args: 
+#   - compute 
+#   - instances
+#   - list
+#   - --filter="tags.items ~ .${_TAG_TO_FILTER_ON}."
+#   - --format="value[separator=',',terminator='\n']"
+#   - ">"
+#   - ${_VM_LIST}
+#   # args: [
+#   #   "compute", 
+#   #   "instances", 
+#   #   "list", 
+#   #   "--filter='(tags.items=${TAG_TO_FILTER_ON})'", 
+#   #   "--format='table[no-heading](name, zone)'",
+#   #   ">",
+#   #   "vm-list.txt"
+#   # ]
+# - id: "debug-vm-list"
+#   name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+#   entrypoint: "ls"
+#   # args:
+#   # - ${_VM_LIST}
+#   # - xargs
+
+# # serviceAccount: projects/kunal-scratch/serviceAccounts/550614207330-compute@developer.gserviceaccount.com
+# # options:
+# #   logging: CLOUD_LOGGING_ONLY
+#   # logging: STACKDRIVER_ONLY
+# substitutions:
+#   _TAG_TO_FILTER_ON: modern-gcp-app
+#   _VM_LIST: vm-list.txt
