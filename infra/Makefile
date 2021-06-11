@@ -32,11 +32,6 @@ vms-clean: enable-compute
 
 platform: enable-compute
 	cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
-#	cd ${DEPLOY_PF}; terraform plan -out=${TF_PLAN}
-#	cd ${DEPLOY_PF}; terraform apply ${TF_PLAN}
-	
-# platform-clean: enable-compute
-# 	cd ${DEPLOY_PF}; terraform destroy -auto-approve
 
 clean-tf:
 	rm -fr .terraform
