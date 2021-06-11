@@ -7,5 +7,5 @@ for instance in $(gcloud compute instances list --filter="tags.items ~ ${MODERN_
     name="${instance%,*}";
     zone="${instance#*,}";
     gcloud compute scp install-prerequisites.sh $name:~/ --zone=$zone 
-    gcloud compute ssh $name --zone=$zone --command="ls -al" &
+    gcloud compute ssh $name --zone=$zone --command="./install-prerequisites.sh"
 done

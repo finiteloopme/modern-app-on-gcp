@@ -34,5 +34,5 @@ platform: enable-compute
 	cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
 
 clean-tf:
-	rm -fr .terraform
+	rm -fr ./**/.terraform
 	
