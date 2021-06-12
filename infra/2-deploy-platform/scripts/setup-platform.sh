@@ -8,14 +8,6 @@ USER_LOGIC_TAG=user-logic
 LEDGER_DB_TAG=ledger-db
 ACCOUNTS_DB_TAG=accounts-db
 
-for instance in $(gcloud compute instances list --filter="tags.items ~ ${MODERN_GCP_APP_TAG}" --format="value[separator=','](name,zone)"); do
-    echo "Working on: ${instance}"
-    name="${instance%,*}";
-    zone="${instance#*,}";
-    gcloud compute scp install-prerequisites.sh $name:~/ --zone=$zone 
-    gcloud compute ssh $name --zone=$zone --command="./install-prerequisites.sh"
-done
-
 # Get the project ID
 PROJECT_ID=$(gcloud config get-value project)
 
@@ -44,24 +36,48 @@ USERSERVICE_API_ADDR=${USER_LOGIC_HOST}:${USERSERVICE_PORT}
 ACCOUNTS_DB_API_ADDR=${ACCOUNTS_DB_HOST}:${ACCOUNTS_DB_PORT}
 LEDGER_DB_API_ADDR=${LEDGER_DB_HOST}:${LEDGER_DB_PORT}
 
-# sed "s/\[ACCOUNTS_DB_API_ADDR\]/${ACCOUNTS_DB_API_ADDR}/g" ./kubernetes-manifests/accounts-db.yaml > ./kubernetes-manifests/accounts-db.yaml
+KUBE_MANIFESTS=kubernetes-manifests
+DEST_FOLDER=${KUBE_MANIFESTS}/tmp
+rm -fr ${DEST_FOLDER}
+mkdir -p ${DEST_FOLDER}
+sed "s/\[ACCOUNTS_DB_API_ADDR\]/${ACCOUNTS_DB_API_ADDR}/g" ./${KUBE_MANIFESTS}/accounts-db-config.yaml > ./${DEST_FOLDER}/accounts-db-config.yaml
 
-# sed "s/\[BALANCES_PORT\]/${BALANCES_PORT}/g" ./kubernetes-manifests/balance-reader.yaml > ./kubernetes-manifests/balance-reader.yaml
+sed "s/\[BALANCES_PORT\]/${BALANCES_PORT}/g" ./${KUBE_MANIFESTS}/balance-reader.yaml > ./${DEST_FOLDER}/balance-reader.yaml
 
-# sed "s/\[TRANSACTIONS_API_ADDR\]/${TRANSACTIONS_API_ADDR}/g" ./kubernetes-manifests/config.yaml > ./kubernetes-manifests/config.yaml
-# sed "s/\[BALANCES_API_ADDR\]/${BALANCES_API_ADDR}/g" ./kubernetes-manifests/config.yaml > ./kubernetes-manifests/config.yaml
-# sed "s/\[HISTORY_API_ADDR\]/${HISTORY_API_ADDR}/g" ./kubernetes-manifests/config.yaml > ./kubernetes-manifests/config.yaml
-# sed "s/\[CONTACTS_API_ADDR\]/${CONTACTS_API_ADDR}/g" ./kubernetes-manifests/config.yaml > ./kubernetes-manifests/config.yaml
-# sed "s/\[USERSERVICE_API_ADDR\]/${USERSERVICE_API_ADDR}/g" ./kubernetes-manifests/config.yaml > ./kubernetes-manifests/config.yaml
+sed "s/\[TRANSACTIONS_API_ADDR\]/${TRANSACTIONS_API_ADDR}/g;
+     s/\[HISTORY_API_ADDR\]/${HISTORY_API_ADDR}/g;
+     s/\[BALANCES_API_ADDR\]/${BALANCES_API_ADDR}/g;
+     s/\[CONTACTS_API_ADDR\]/${CONTACTS_API_ADDR}/g;
+     s/\[USERSERVICE_API_ADDR\]/${USERSERVICE_API_ADDR}/g
+    " ./${KUBE_MANIFESTS}/config.yaml > ./${DEST_FOLDER}/config.yaml
 
-# sed "s/\[CONTACTS_PORT\]/${CONTACTS_PORT}/g" ./kubernetes-manifests/contacts.yaml > ./kubernetes-manifests/contacts.yaml
+sed "s/\[CONTACTS_PORT\]/${CONTACTS_PORT}/g" ./${KUBE_MANIFESTS}/contacts.yaml > ./${DEST_FOLDER}/contacts.yaml
 
-# sed "s/\[LEDGER_DB_API_ADDR\]/${LEDGER_DB_API_ADDR}/g" ./kubernetes-manifests/ledger-db.yaml > ./kubernetes-manifests/ledger-db.yaml
+sed "s/\[LEDGER_DB_API_ADDR\]/${LEDGER_DB_API_ADDR}/g" ./${KUBE_MANIFESTS}/ledger-db-config.yaml > ./${DEST_FOLDER}/ledger-db-config.yaml
 
-# sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./kubernetes-manifests/ledger-writer.yaml > ./kubernetes-manifests/ledger-writer.yaml
+sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./${KUBE_MANIFESTS}/ledger-writer.yaml > ./${DEST_FOLDER}/ledger-writer.yaml
 
-# sed "s/\[FRONTEND_HOST\]/${FRONTEND_HOST}/g" ./kubernetes-manifests/loadgenerator.yaml > ./kubernetes-manifests/loadgenerator.yaml
+sed "s/\[FRONTEND_HOST\]/${FRONTEND_HOST}/g" ./${KUBE_MANIFESTS}/loadgenerator.yaml > ./${DEST_FOLDER}/loadgenerator.yaml
 
-# sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./kubernetes-manifests/transaction-history.yaml > ./kubernetes-manifests/transaction-history.yaml
+sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./${KUBE_MANIFESTS}/transaction-history.yaml > ./${DEST_FOLDER}/transaction-history.yaml
 
-# sed "s/\[USERSERVICE_PORT\]/${USERSERVICE_PORT}/g" ./kubernetes-manifests/userservice.yaml > ./kubernetes-manifests/userservice.yaml
+sed "s/\[USERSERVICE_PORT\]/${USERSERVICE_PORT}/g" ./${KUBE_MANIFESTS}/userservice.yaml > ./${DEST_FOLDER}/userservice.yaml
+
+# Manually copy the remaining yaml files to destination as we will use destination for kube deployment
+cp ./${KUBE_MANIFESTS}/frontend.yaml ./${DEST_FOLDER}/frontend.yaml
+cp ./${KUBE_MANIFESTS}/ledger-db.yaml ./${DEST_FOLDER}/ledger-db.yaml
+cp ./${KUBE_MANIFESTS}/accounts-db.yaml ./${DEST_FOLDER}/accounts-db.yaml
+
+# Copy scripts & config files to all the VM instances
+for instance in $(gcloud compute instances list --filter="tags.items ~ ${MODERN_GCP_APP_TAG}" --format="value[separator=','](name,zone)"); do
+    echo "Working on: ${instance}"
+    name="${instance%,*}";
+    zone="${instance#*,}";
+
+    gcloud compute ssh $name --zone=$zone --command="rm -fr ${KUBE_MANIFESTS}; rm -fr ${DEST_FOLDER}; mkdir -p ${KUBE_MANIFESTS}; mkdir ${DEST_FOLDER}; rm -fr ${KUBE_MANIFESTS}/secret; mkdir -p ${KUBE_MANIFESTS}/secret"
+    gcloud compute scp *.sh $name:~/ --zone=$zone 
+    gcloud compute scp ${KUBE_MANIFESTS}/*.yaml $name:~/${KUBE_MANIFESTS}/ --zone=$zone 
+    gcloud compute scp ${KUBE_MANIFESTS}/secret/*.yaml $name:~/${KUBE_MANIFESTS}/secret/ --zone=$zone 
+    gcloud compute scp ${DEST_FOLDER}/*.yaml $name:~/${DEST_FOLDER}/ --zone=$zone 
+    gcloud compute ssh $name --zone=$zone --command="./install-prerequisites.sh"
+done

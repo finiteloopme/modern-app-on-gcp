@@ -30,3 +30,4 @@ override.tf.json
 infra/**/.terraform*
 infra/**/*.tfstate*
 infra/**/infra.tfplan
+infra/2-deploy-platform/scripts/kubernetes-manifests/tmp*
