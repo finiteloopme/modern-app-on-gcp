@@ -1,6 +1,36 @@
 steps:
-- id: "debug-gcloud"
+- id: "setup-platform"
   name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
   args:
   - "./setup-platform.sh"
+- id: "install-accounts-db"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./install-accounts-db.sh"
+  waitFor:
+  - "setup-platform"
+- id: "install-user-host"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./install-user-host.sh"
+  waitFor:
+  - "setup-platform"
+- id: "install-ledger-db"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./install-ledger-db.sh"
+  waitFor:
+  - "setup-platform"
+- id: "install-bus-logic-host"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./install-bus-logic-host.sh"
+  waitFor:
+  - "setup-platform"
+- id: "install-frontend"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./install-frontend.sh"
+  waitFor:
+  - "setup-platform"
 timeout: 1800s

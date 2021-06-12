@@ -59,7 +59,7 @@ sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./${KUBE_MANIFESTS}/ledger-
 
 sed "s/\[FRONTEND_HOST\]/${FRONTEND_HOST}/g" ./${KUBE_MANIFESTS}/loadgenerator.yaml > ./${DEST_FOLDER}/loadgenerator.yaml
 
-sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./${KUBE_MANIFESTS}/transaction-history.yaml > ./${DEST_FOLDER}/transaction-history.yaml
+sed "s/\[HISTORY_PORT\]/${HISTORY_PORT}/g" ./${KUBE_MANIFESTS}/transaction-history.yaml > ./${DEST_FOLDER}/transaction-history.yaml
 
 sed "s/\[USERSERVICE_PORT\]/${USERSERVICE_PORT}/g" ./${KUBE_MANIFESTS}/userservice.yaml > ./${DEST_FOLDER}/userservice.yaml
 
