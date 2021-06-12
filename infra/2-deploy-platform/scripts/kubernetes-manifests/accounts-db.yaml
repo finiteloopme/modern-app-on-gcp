@@ -88,4 +88,5 @@ data:
   POSTGRES_DB: accounts-db
   POSTGRES_USER: accounts-admin
   POSTGRES_PASSWORD: accounts-pwd
-  ACCOUNTS_DB_URI: postgresql://accounts-admin:accounts-pwd@accounts-db:5432/accounts-db
+  # ACCOUNTS_DB_URI: postgresql://accounts-admin:accounts-pwd@accounts-db:5432/accounts-db
+  ACCOUNTS_DB_URI: postgresql://accounts-admin:accounts-pwd@[ACCOUNTS_DB_API_ADDR]/accounts-db

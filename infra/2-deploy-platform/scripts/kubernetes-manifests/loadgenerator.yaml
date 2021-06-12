@@ -35,7 +35,7 @@ spec:
         image: gcr.io/bank-of-anthos/loadgenerator:v0.4.3
         env:
         - name: FRONTEND_ADDR
-          value: "frontend:80"
+          value: "[FRONTEND_HOST]:80"
         - name: USERS
           value: "5"
         - name: LOG_LEVEL

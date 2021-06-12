@@ -109,5 +109,5 @@ spec:
     app: transactionhistory
   ports:
   - name: http
-    port: 8080
+    port: [HISTORY_PORT]
     targetPort: 8080

@@ -92,5 +92,5 @@ spec:
     app: userservice
   ports:
   - name: http
-    port: 8080
+    port: [USERSERVICE_PORT]
     targetPort: 8080

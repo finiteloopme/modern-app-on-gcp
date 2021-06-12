@@ -93,5 +93,5 @@ spec:
     app: ledgerwriter
   ports:
   - name: http
-    port: 8080
+    port: [TRANSACTIONS_PORT]
     targetPort: 8080

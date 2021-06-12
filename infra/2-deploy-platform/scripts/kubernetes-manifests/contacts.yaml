@@ -82,5 +82,5 @@ spec:
     app: contacts
   ports:
   - name: http
-    port: 8080
+    port: [CONTACTS_PORT]
     targetPort: 8080

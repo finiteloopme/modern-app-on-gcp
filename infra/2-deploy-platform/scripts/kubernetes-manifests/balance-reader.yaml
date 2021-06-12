@@ -104,5 +104,5 @@ spec:
     app: balancereader
   ports:
   - name: http
-    port: 8080
+    port: [BALANCES_PORT]
     targetPort: 8080
