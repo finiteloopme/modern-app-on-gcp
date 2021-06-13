@@ -75,7 +75,7 @@ kind: Service
 metadata:
   name: ledger-db
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: ledger-db
   ports:

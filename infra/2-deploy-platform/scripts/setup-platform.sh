@@ -26,6 +26,7 @@ CONTACTS_PORT=8080
 USERSERVICE_PORT=8081
 ACCOUNTS_DB_PORT=5432
 LEDGER_DB_PORT=5432
+FRONTEND_PORT=8080
 
 # Construct individual service endpoints. i.e. hostname:port
 TRANSACTIONS_API_ADDR=${BUS_LOGIC_HOST}:${TRANSACTIONS_PORT}
@@ -35,6 +36,7 @@ CONTACTS_API_ADDR=${USER_LOGIC_HOST}:${CONTACTS_PORT}
 USERSERVICE_API_ADDR=${USER_LOGIC_HOST}:${USERSERVICE_PORT}
 ACCOUNTS_DB_API_ADDR=${ACCOUNTS_DB_HOST}:${ACCOUNTS_DB_PORT}
 LEDGER_DB_API_ADDR=${LEDGER_DB_HOST}:${LEDGER_DB_PORT}
+FRONTEND_API_ADDR=${FRONTEND_HOST}:${FRONTEND_PORT}
 
 KUBE_MANIFESTS=kubernetes-manifests
 DEST_FOLDER=${KUBE_MANIFESTS}/tmp
@@ -57,14 +59,15 @@ sed "s/\[LEDGER_DB_API_ADDR\]/${LEDGER_DB_API_ADDR}/g" ./${KUBE_MANIFESTS}/ledge
 
 sed "s/\[TRANSACTIONS_PORT\]/${TRANSACTIONS_PORT}/g" ./${KUBE_MANIFESTS}/ledger-writer.yaml > ./${DEST_FOLDER}/ledger-writer.yaml
 
-sed "s/\[FRONTEND_HOST\]/${FRONTEND_HOST}/g" ./${KUBE_MANIFESTS}/loadgenerator.yaml > ./${DEST_FOLDER}/loadgenerator.yaml
+sed "s/\[FRONTEND_API_ADDR\]/${FRONTEND_API_ADDR}/g" ./${KUBE_MANIFESTS}/loadgenerator.yaml > ./${DEST_FOLDER}/loadgenerator.yaml
 
 sed "s/\[HISTORY_PORT\]/${HISTORY_PORT}/g" ./${KUBE_MANIFESTS}/transaction-history.yaml > ./${DEST_FOLDER}/transaction-history.yaml
 
 sed "s/\[USERSERVICE_PORT\]/${USERSERVICE_PORT}/g" ./${KUBE_MANIFESTS}/userservice.yaml > ./${DEST_FOLDER}/userservice.yaml
 
+sed "s/\[FRONTEND_PORT\]/${FRONTEND_PORT}/g" ./${KUBE_MANIFESTS}/frontend.yaml > ./${DEST_FOLDER}/frontend.yaml
+
 # Manually copy the remaining yaml files to destination as we will use destination for kube deployment
-cp ./${KUBE_MANIFESTS}/frontend.yaml ./${DEST_FOLDER}/frontend.yaml
 cp ./${KUBE_MANIFESTS}/ledger-db.yaml ./${DEST_FOLDER}/ledger-db.yaml
 cp ./${KUBE_MANIFESTS}/accounts-db.yaml ./${DEST_FOLDER}/accounts-db.yaml
 

@@ -101,10 +101,10 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: frontend
   ports:
   - name: http
-    port: 80
+    port: [FRONTEND_PORT]
     targetPort: 8080
