@@ -13,7 +13,11 @@ function wait_for_ready_status(){
     # sudo -u ${NEW_USER} kubectl port-forward --address 0.0.0.0 svc/${SERVICE_NAME}-svc ${LISTEN_PORT_NUMBER}:${SVC_PORT_NUM} &
     # SVC_NAME=$(sudo -u ${NEW_USER} kubectl get svcs -l app=${SERVICE_NAME} -o 'jsonpath={..metadata.name}')
     #sleep 10 # Allow time to expose Service
-    sudo -u ${NEW_USER} kubectl port-forward --address 0.0.0.0 svc/${SERVICE_NAME} ${LISTEN_PORT_NUMBER}:${SVC_PORT_NUM} &
+    # sudo -u ${NEW_USER} kubectl port-forward --address 0.0.0.0 svc/${SERVICE_NAME} ${LISTEN_PORT_NUMBER}:${SVC_PORT_NUM} &
+    MINIKUBE_IP=$(sudo -u ${NEW_USER} minikube ip)
+    SERVICE_NODEPORT=$(sudo -u ${NEW_USER} kubectl get service ${SERVICE_NAME} --output='jsonpath="{.spec.ports[0].nodePort}"')
+    echo "${SERVICE_NAME} is available at ${MINIKUBE_IP}:${SERVICE_NODEPORT}"
+    sudo socat TCP-LISTEN:${LISTEN_PORT_NUMBER},fork TCP:${MINIKUBE_IP}:${SERVICE_NODEPORT} &
     echo "Done starting ${SERVICE_NAME}."
 
     return

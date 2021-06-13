@@ -20,13 +20,14 @@ sudo groupadd docker
 sudo usermod -aG docker $NEW_USER
 
 sudo apt install -y kubectl
-sudo apt install -y snapd
-sudo snap install yq
+#sudo apt install -y snapd
+sudo apt install -y socat
+#sudo snap install yq
 
 # Install Minikube
 echo "Start installing minikube"
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
 sudo dpkg -i minikube_latest_amd64.deb
 #sudo -u ${NEW_USER} minikube start
-sudo -u ${NEW_USER} minikube start
+sudo -u ${NEW_USER} minikube start --extra-config=apiserver.service-node-port-range=1-65535
 echo "Done installing minikube"
