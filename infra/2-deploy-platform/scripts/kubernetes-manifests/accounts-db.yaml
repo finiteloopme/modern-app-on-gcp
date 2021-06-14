@@ -69,6 +69,7 @@ metadata:
     app: accounts-db
     tier: db
 spec:
+  type: NodePort
   ports:
     - port: 5432
       name: tcp

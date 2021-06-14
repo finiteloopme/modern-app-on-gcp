@@ -17,7 +17,7 @@ function wait_for_ready_status(){
     MINIKUBE_IP=$(sudo -u ${NEW_USER} minikube ip)
     SERVICE_NODEPORT=$(sudo -u ${NEW_USER} kubectl get service ${SERVICE_NAME} --output='jsonpath="{.spec.ports[0].nodePort}"')
     echo "${SERVICE_NAME} is available at ${MINIKUBE_IP}:${SERVICE_NODEPORT}"
-    sudo socat TCP-LISTEN:${LISTEN_PORT_NUMBER},fork TCP:${MINIKUBE_IP}:${SERVICE_NODEPORT} &
+    sudo socat TCP-LISTEN:${LISTEN_PORT_NUMBER},fork TCP:${MINIKUBE_IP}:${SERVICE_NODEPORT}
     echo "Done starting ${SERVICE_NAME}."
 
     return

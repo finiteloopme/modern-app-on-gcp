@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 # Install Docker
 sudo apt update
 sudo apt install --yes apt-transport-https ca-certificates curl gnupg2 software-properties-common

@@ -82,5 +82,12 @@ for instance in $(gcloud compute instances list --filter="tags.items ~ ${MODERN_
     gcloud compute scp ${KUBE_MANIFESTS}/*.yaml $name:~/${KUBE_MANIFESTS}/ --zone=$zone 
     gcloud compute scp ${KUBE_MANIFESTS}/secret/*.yaml $name:~/${KUBE_MANIFESTS}/secret/ --zone=$zone 
     gcloud compute scp ${DEST_FOLDER}/*.yaml $name:~/${DEST_FOLDER}/ --zone=$zone 
-    gcloud compute ssh $name --zone=$zone --command="./install-prerequisites.sh"
+    # gcloud compute ssh $name --zone=$zone --command="./install-prerequisites.sh"
+    pids[${i}]=$!
+done
+
+# Wait for all pids
+for pid in ${pid[*]}; do
+    echo "Waiting for install-prerequisites.sh to finish ${pid}"
+    wait $pid
 done
