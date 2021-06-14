@@ -8,8 +8,7 @@ enable-compute:
 delete-vms:
 	terraform destroy -target=module.gce_instances
 
-clean: enable-compute
-	terraform destroy
+clean: vms-clean infra-clean
 
 auth:
 	gcloud auth application-default login
