@@ -1,14 +1,15 @@
 TF_PLAN=infra.tfplan
 SHARED_INFRA=0-shared-infra
 VMS=1-compute-vms
-DEPLOY_PF=2-deploy-platform
+# DEPLOY_PF=2-deploy-platform
+DEPLOY_PF=1-setup-platform
 enable-compute:
 	gcloud services enable compute.googleapis.com
 	
 delete-vms:
 	terraform destroy -target=module.gce_instances
 
-clean: vms-clean infra-clean
+clean: platform-clean vms-clean infra-clean
 
 auth:
 	gcloud auth application-default login
@@ -30,7 +31,13 @@ vms-clean: enable-compute
 	cd ${VMS}; terraform destroy -auto-approve
 
 platform: enable-compute
-	cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
+	# cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
+	cd ${DEPLOY_PF}; terraform init
+	cd ${DEPLOY_PF}; terraform plan -out=${TF_PLAN}
+	cd ${DEPLOY_PF}; terraform apply ${TF_PLAN}
+
+platform-clean: enable-compute
+	cd ${DEPLOY_PF}; terraform destroy -auto-approve
 
 clean-tf:
 	rm -fr ./**/.terraform
