@@ -1,7 +1,17 @@
+module "gke-subnet"{
+  source            = "git::https://github.com/finiteloopme/tf-modules-argolis.git//modules/subnet"
+  project_id                  = var.project_id
+  network                     = var.network
+  gke_network                 = var.gke_network
+  ip_range_pods               = var.ip_range_pods
+  svc_ips                     = var.svc_ips
+
+}
 module "gke-instance"{
+  for_each          = {for gke_instance in var.gke_instances: gke_instance.name => gke_instance}
   source            = "git::https://github.com/finiteloopme/tf-modules-argolis.git//modules/gke"
   project_id        = var.project_id
-  gke_cluster_name  = "test"
+  gke_cluster_name  = each.value["name"]
   instance_tags     = split(",", each.value["instance_tags"])
 }
 
