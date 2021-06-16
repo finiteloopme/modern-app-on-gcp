@@ -27,18 +27,95 @@ variable vm_instances{
 
 variable gke_instances{
   description   = "List of GKE instances to be created"
-  type          = list(map(string))
+  # type          = list(map(any))
+  type          = list(object({
+    name  = string
+    instance_tags = string
+    network = string
+    subnet  = object({
+      name  = string
+      cidr  = string
+      subnet_region = string
+    })
+    secondary_ranges  = object({
+      pod_ips = object({
+        name  = string
+        cidr  = string
+      }),
+      svc_ips = object({
+        name  = string
+        cidr  = string
+      })
+    })
+  }))
   default       = [
     {
-      name = "bank-of-anthos-cluster"
-      instance_tags = "gke,modern-gcp-app,bank-of-anthos"
+      "name"  = "bank-of-anthos-cluster"
+      "instance_tags" = "gke,modern-gcp-app,bank-of-anthos"
+      "network" = "default"
+      "subnet"  = {
+        "name"  = "bank-of-anthos-subnet-boa"
+        "cidr"  = "10.10.0.0/16"
+        "subnet_region" = "us-central1"
+      }
+      "secondary_ranges"  = {
+        "pod_ips" = {
+          "name"  = "pod-ips-secondary-range-boa"
+          "cidr"  = "10.11.0.0/16"
+        },
+        "svc_ips" = {
+          "name"  = "svc-ips-secondary-range-boa",
+          "cidr"  = "10.12.0.0/16"}
+      }
     },
     {
-      name = "servicemesh-control-plane-cluster"
-      instance_tags = "gke,servicemesh-ctrl-plane"
+      "name"  = "asm-control-plane-cluster"
+      "instance_tags" = "gke,servicemesh-ctrl-plane"
+      "network" = "default"
+      "subnet"  = {
+        "name"  = "asm-ctrl-plane-subnet-asm"
+        "cidr"  = "10.13.0.0/16"
+        "subnet_region" = "us-central1"
+      }
+      "secondary_ranges"  = {
+        "pod_ips" = {
+          "name"  = "pod-ips-secondary-range-asm"
+          "cidr"  = "10.14.0.0/16"
+        },
+        "svc_ips" = {
+          "name"  = "svc-ips-secondary-range-asm",
+          "cidr"  = "10.15.0.0/16"}
+      }
     },
+    # {
+    #   name = "servicemesh-control-plane-cluster"
+    #   instance_tags = "gke,servicemesh-ctrl-plane"
+    # },
   ]
 }
+
+# variable gke_instance{
+#   description   = "List of GKE instances to be created"
+#   type          = "map"
+  # type          = map({
+  #   name: string
+  #   instance_tags: string
+  #   subnet: {
+  #     name: string
+  #     cidr: string
+  #   }
+  #   secondary_ranges: {
+  #     pod_ips: {
+  #       name: string
+  #       cidr: string
+  #     },
+  #     svc_ips: {
+  #       name: string
+  #       cidr: string
+  #     }
+  #   }
+  # })
+#}
 
 variable "network" {
   description = "Network to use for provisioning resources"
