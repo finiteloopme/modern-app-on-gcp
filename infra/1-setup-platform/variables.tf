@@ -12,6 +12,17 @@ variable "gcp_zone" {
   default = "us-central1-b"
 }
 
+variable "vm_template" {
+  description = "GCE Template to be created"
+  type        = map(string)
+  default     = {
+    machine_type        = "n1-highmem-8"
+    source_image_family = "debian-10"
+    source_image_project  = "debian-cloud"
+    instance_tags         = "http,https,monolith,for-asm-gce-template"
+  }
+
+}
 variable vm_instances{
   description   = "List of VM instances to be created"
   type          = list(map(string))
@@ -130,26 +141,26 @@ variable "network" {
   default = "default"
 }
 
-variable "gke_network" {
-    description = "Name of the subnet which will host GKE cluster"
-    default = {
-      name: "gke-subnetwork",
-      cidr: "10.10.0.0/16"
-      subnet_region: "us-central1"
-    }
-}
-variable "ip_range_pods" {
-    description = "CIDR for PODs"
-    default = {
-      name: "pod-ips-secondary-range",
-      cidr: "10.11.0.0/16"
-    }
-}
+# variable "gke_network" {
+#     description = "Name of the subnet which will host GKE cluster"
+#     default = {
+#       name: "gke-subnetwork",
+#       cidr: "10.10.0.0/16"
+#       subnet_region: "us-central1"
+#     }
+# }
+# variable "ip_range_pods" {
+#     description = "CIDR for PODs"
+#     default = {
+#       name: "pod-ips-secondary-range",
+#       cidr: "10.11.0.0/16"
+#     }
+# }
 
-variable "svc_ips" {
-    description = "CIDR for Services"
-    default = {
-      name: "svc-ips-secondary-range",
-      cidr: "10.12.0.0/16"
-    }
-}
+# variable "svc_ips" {
+#     description = "CIDR for Services"
+#     default = {
+#       name: "svc-ips-secondary-range",
+#       cidr: "10.12.0.0/16"
+#     }
+# }
