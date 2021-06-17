@@ -22,7 +22,7 @@ infra: enable-compute
 infra-clean: enable-compute
 	cd ${SHARED_INFRA}; terraform destroy -auto-approve
 
-platform: enable-compute
+platform-deploy: enable-compute
 	# cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
 	cd ${DEPLOY_PF}; terraform init
 	cd ${DEPLOY_PF}; terraform plan -out=${TF_PLAN}

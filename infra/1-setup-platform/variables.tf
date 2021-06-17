@@ -32,6 +32,7 @@ variable gke_instances{
     name  = string
     instance_tags = string
     network = string
+    resource_labels = map(string)
     subnet  = object({
       name  = string
       cidr  = string
@@ -53,6 +54,10 @@ variable gke_instances{
       "name"  = "bank-of-anthos-cluster"
       "instance_tags" = "gke,modern-gcp-app,bank-of-anthos"
       "network" = "default"
+      resource_labels = {
+        "workload"  = "bank-of-anthos"
+      }
+
       "subnet"  = {
         "name"  = "bank-of-anthos-subnet-boa"
         "cidr"  = "10.10.0.0/16"
@@ -72,6 +77,9 @@ variable gke_instances{
       "name"  = "asm-control-plane-cluster"
       "instance_tags" = "gke,servicemesh-ctrl-plane"
       "network" = "default"
+      resource_labels = {
+        "workload"  = "asm-control-plane"
+      }
       "subnet"  = {
         "name"  = "asm-ctrl-plane-subnet-asm"
         "cidr"  = "10.13.0.0/16"
