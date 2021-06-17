@@ -3,18 +3,13 @@ GCP_REGION=us-central1
 GCP_ZONE=${GCP_REGION}-b
 TF_PLAN=infra.tfplan
 SHARED_INFRA=0-shared-infra
-VMS=1-compute-vms
-# DEPLOY_PF=2-deploy-platform
 DEPLOY_PF=1-setup-platform
 DEPLOY_MONOLITH=2-deploy-monolith
 CLUSTER_LABEL=bank-of-anthos
 enable-compute:
 	gcloud services enable compute.googleapis.com
 	
-delete-vms:
-	terraform destroy -target=module.gce_instances
-
-clean: platform-clean vms-clean infra-clean
+clean: monolith-clean platform-clean infra-clean
 
 auth:
 	gcloud auth application-default login
@@ -26,14 +21,6 @@ infra: enable-compute
 
 infra-clean: enable-compute
 	cd ${SHARED_INFRA}; terraform destroy -auto-approve
-
-vms: enable-compute
-	cd ${VMS}; terraform init
-	cd ${VMS}; terraform plan -out=${TF_PLAN}
-	cd ${VMS}; terraform apply ${TF_PLAN}
-	
-vms-clean: enable-compute
-	cd ${VMS}; terraform destroy -auto-approve
 
 platform: enable-compute
 	# cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
