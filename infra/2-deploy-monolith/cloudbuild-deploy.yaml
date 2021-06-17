@@ -1,0 +1,26 @@
+steps:
+- id: "clone-repo"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./clone-git-repository.sh"
+- id: "deploy-monolith"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./deploy-monolith.sh"
+  - ${_PROJECT_ID}
+  - ${_GCP_ZONE}
+  waitFor:
+  - "clone-repo"
+- id: "deploy-microservices"
+  name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+  args:
+  - "./deploy-microservices.sh"
+  - ${_PROJECT_ID}
+  - ${_GCP_ZONE}
+  - ${_CLUSTER_LABEL}
+  waitFor:
+  - "clone-repo"
+substitutions:
+  _PROJECT_ID: ""
+  _GCP_ZONE: ""
+  _CLUSTER_LABEL: ""
