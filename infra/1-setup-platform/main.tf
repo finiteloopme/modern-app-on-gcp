@@ -16,3 +16,10 @@ module "gce_instances"{
   instance_tags     = split(",", each.value["instance_tags"])
   # startup_script    = each.value.script=="" ? file("${path.module}/scripts/install-docker.sh") : format("%s\n%s", file("${path.module}/scripts/install-docker.sh"), file("${path.module}/${each.value.script}"))
 }
+
+module "asm"{
+  source                = "git::https://github.com/finiteloopme/tf-modules-argolis.git//modules/asm"
+  project_id            = var.project_id
+  gke_cluster           = "asm-control-plane-cluster"
+  gke_location          = var.gcp_region
+}
