@@ -30,4 +30,8 @@ override.tf.json
 infra/**/.terraform*
 infra/**/*.tfstate*
 infra/**/infra.tfplan
-infra/2-deploy-platform/scripts/kubernetes-manifests/tmp*
+
+# Ignore ASM files
+infra/1-setup-platform/*-outdir
+infra/1-setup-platform/install_asm*
+
