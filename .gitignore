@@ -34,4 +34,6 @@ infra/**/infra.tfplan
 # Ignore ASM files
 infra/1-setup-platform/*-outdir
 infra/1-setup-platform/install_asm*
-
+infra/2-deploy-monolith/scripts/asm_vm
+infra/2-deploy-monolith/scripts/bank-of-anthos*
+infra/2-deploy-monolith/scripts/workload-group.yaml

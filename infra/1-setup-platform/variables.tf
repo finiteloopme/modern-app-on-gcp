@@ -16,6 +16,7 @@ variable "vm_template" {
   description = "GCE Template to be created"
   type        = map(string)
   default     = {
+    name_prefix         = "gce-template-for-asm"
     machine_type        = "n1-highmem-8"
     source_image_family = "debian-10"
     source_image_project  = "debian-cloud"
@@ -84,28 +85,28 @@ variable gke_instances{
           "cidr"  = "10.12.0.0/16"}
       }
     },
-    {
-      "name"  = "asm-control-plane-cluster"
-      "instance_tags" = "gke,servicemesh-ctrl-plane"
-      "network" = "default"
-      resource_labels = {
-        "workload"  = "asm-control-plane"
-      }
-      "subnet"  = {
-        "name"  = "asm-ctrl-plane-subnet-asm"
-        "cidr"  = "10.13.0.0/16"
-        "subnet_region" = "us-central1"
-      }
-      "secondary_ranges"  = {
-        "pod_ips" = {
-          "name"  = "pod-ips-secondary-range-asm"
-          "cidr"  = "10.14.0.0/16"
-        },
-        "svc_ips" = {
-          "name"  = "svc-ips-secondary-range-asm",
-          "cidr"  = "10.15.0.0/16"}
-      }
-    },
+    # {
+    #   "name"  = "asm-control-plane-cluster"
+    #   "instance_tags" = "gke,servicemesh-ctrl-plane"
+    #   "network" = "default"
+    #   resource_labels = {
+    #     "workload"  = "asm-control-plane"
+    #   }
+    #   "subnet"  = {
+    #     "name"  = "asm-ctrl-plane-subnet-asm"
+    #     "cidr"  = "10.13.0.0/16"
+    #     "subnet_region" = "us-central1"
+    #   }
+    #   "secondary_ranges"  = {
+    #     "pod_ips" = {
+    #       "name"  = "pod-ips-secondary-range-asm"
+    #       "cidr"  = "10.14.0.0/16"
+    #     },
+    #     "svc_ips" = {
+    #       "name"  = "svc-ips-secondary-range-asm",
+    #       "cidr"  = "10.15.0.0/16"}
+    #   }
+    # },
     # {
     #   name = "servicemesh-control-plane-cluster"
     #   instance_tags = "gke,servicemesh-ctrl-plane"

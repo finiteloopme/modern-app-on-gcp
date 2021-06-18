@@ -10,7 +10,10 @@ name="${instance%,*}";
 location="${instance#*,}";
 # Assuming this is a regional cluster
 gcloud container clusters get-credentials --region=${location} ${name}
-sed "s/\[[PROJECT_ID]\]/${PROJECT_ID}/g" src/ledgermonolith/config.yaml > config.yaml
+# TODO: Need a better way to identify the monolith GCE instance
+export MONOLITH_VM_NAME=$(gcloud compute instances list --filter="name ~ ledger-monolith" --format="value(name)")
+sed "s/\[PROJECT_ID\]/${PROJECT_ID}/g" src/ledgermonolith/config.yaml > _config.yaml
+sed "s/ledgermonolith-service/${MONOLITH_VM_NAME}/g" _config.yaml > config.yaml
 kubectl apply -f config.yaml
 kubectl apply -f extras/jwt/jwt-secret.yaml
 kubectl apply -f kubernetes-manifests/accounts-db.yaml
