@@ -32,10 +32,12 @@ platform-clean: enable-compute
 	cd ${DEPLOY_PF}; terraform destroy -auto-approve
 
 monolith-deploy:
-	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	# cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
 
 monolith-clean:
-	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	# cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
 
 clean-tf:
 	rm -fr ./**/.terraform

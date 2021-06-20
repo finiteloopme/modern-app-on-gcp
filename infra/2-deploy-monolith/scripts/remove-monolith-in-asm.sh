@@ -31,10 +31,10 @@ gcloud container clusters get-credentials --region=${location} ${name}
 export ASM_CLUSTER=${name}
 # gcloud container clusters get-credentials ${ASM_CLUSTER} --region ${GCP_REGION}
 
-kubectl create ns ${WORKLOAD_NAMESPACE}
-kubectl label ns ${WORKLOAD_NAMESPACE} istio-injection- istio.io/rev=${ASM_REVISION} --overwrite
-curl https://storage.googleapis.com/csm-artifacts/asm/asm_vm_1.9 > asm_vm
-chmod +x asm_vm
+# kubectl create ns ${WORKLOAD_NAMESPACE}
+# kubectl label ns ${WORKLOAD_NAMESPACE} istio-injection- istio.io/rev=${ASM_REVISION} --overwrite
+# curl https://storage.googleapis.com/csm-artifacts/asm/asm_vm_1.9 > asm_vm
+# chmod +x asm_vm
 
 cat > workload-group.yaml <<EOF
 apiVersion: networking.istio.io/v1alpha3
@@ -53,20 +53,31 @@ spec:
    serviceAccount: ${WORKLOAD_SERVICE_ACCOUNT}
 EOF
 
-kubectl apply -f workload-group.yaml
+echo "Removing workload group entry from the cluster: " ${ASM_CLUSTER}
+kubectl delete -f workload-group.yaml
 
-./asm_vm create_gce_instance_template \
-${ASM_INSTANCE_TEMPLATE} \
---project_id ${PROJECT_ID} \
---cluster_location ${GCP_REGION} \
---cluster_name ${ASM_CLUSTER} \
---workload_name ${WORKLOAD_NAME} \
---workload_namespace ${WORKLOAD_NAMESPACE} \
---source_instance_template ${SOURCE_INSTANCE_TEMPLATE}
+# ./asm_vm create_gce_instance_template \
+# ${ASM_INSTANCE_TEMPLATE} \
+# --project_id ${PROJECT_ID} \
+# --cluster_location ${GCP_REGION} \
+# --cluster_name ${ASM_CLUSTER} \
+# --workload_name ${WORKLOAD_NAME} \
+# --workload_namespace ${WORKLOAD_NAMESPACE} \
+# --source_instance_template ${SOURCE_INSTANCE_TEMPLATE}
 
-gcloud compute instance-groups managed create \
-${INSTANCE_GROUP_NAME} \
---template ${ASM_INSTANCE_TEMPLATE} \
---zone=${INSTANCE_GROUP_ZONE} \
---project=${PROJECT_ID} \
---size=1
+# gcloud compute instance-groups managed create \
+# ${INSTANCE_GROUP_NAME} \
+# --template ${ASM_INSTANCE_TEMPLATE} \
+# --zone=${INSTANCE_GROUP_ZONE} \
+# --project=${PROJECT_ID} \
+# --size=1
+
+echo "Removing the managed instance group: " ${INSTANCE_GROUP_NAME}
+gcloud compute instance-groups managed delete \
+  ${INSTANCE_GROUP_NAME} \
+  --zone=${INSTANCE_GROUP_ZONE} \
+  --project=${PROJECT_ID} \
+
+echo "Removing managed instance template: " ${ASM_INSTANCE_TEMPLATE}
+gcloud compute instance-templates delete \
+  ${ASM_INSTANCE_TEMPLATE}

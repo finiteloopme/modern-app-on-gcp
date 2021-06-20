@@ -6,7 +6,7 @@ steps:
 - id: "deploy-monolith"
   name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
   args:
-  - "./asm_vm.sh"
+  - "./deploy-monolith-in-asm.sh"
   - ${_PROJECT_ID}
   - ${_CLUSTER_LABEL}
   waitFor:
@@ -16,11 +16,9 @@ steps:
   args:
   - "./deploy-microservices.sh"
   - ${_PROJECT_ID}
-  - ${_GCP_ZONE}
   - ${_CLUSTER_LABEL}
   waitFor:
   - "deploy-monolith"
 substitutions:
   _PROJECT_ID: ""
-  _GCP_ZONE: ""
   _CLUSTER_LABEL: ""

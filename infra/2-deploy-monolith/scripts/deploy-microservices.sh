@@ -1,7 +1,6 @@
 #!/bin/bash
 export PROJECT_ID=${1}
-export ZONE=${2}
-export CLUSTER_LABEL=${3}
+export CLUSTER_LABEL=${2}
 cd bank-of-anthos
 ls -al
 instance=$(gcloud container clusters list --filter="resourceLabels.workload ~ ${CLUSTER_LABEL}" --format="value[separator=','](name,location)")
