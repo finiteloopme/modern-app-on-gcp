@@ -1,11 +1,11 @@
-GCP_PROJECT=kunal-scratch
+GCP_PROJECT=kl-dev-scratchpad
 GCP_REGION=us-central1
 GCP_ZONE=${GCP_REGION}-b
-TF_PLAN=infra.tfplan
 SHARED_INFRA=0-shared-infra
 DEPLOY_PF=1-setup-platform
 DEPLOY_MONOLITH=2-deploy-monolith
 CLUSTER_LABEL=bank-of-anthos
+TF_PLAN=${GCP_PROJECT}-infra.tfplan
 enable-compute:
 	gcloud services enable compute.googleapis.com
 	
