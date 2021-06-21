@@ -29,7 +29,7 @@ override.tf.json
 # example: *tfplan*
 infra/**/.terraform*
 infra/**/*.tfstate*
-infra/**/infra.tfplan
+infra/**/*.tfplan
 
 # Ignore ASM files
 infra/1-setup-platform/*-outdir
