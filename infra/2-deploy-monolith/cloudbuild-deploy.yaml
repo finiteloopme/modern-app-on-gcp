@@ -9,6 +9,7 @@ steps:
   - "./deploy-monolith-in-asm.sh"
   - ${_PROJECT_ID}
   - ${_CLUSTER_LABEL}
+  - ${_MONOLITH_SERVICE}
   waitFor:
   - "clone-repo"
 - id: "deploy-microservices"
@@ -17,8 +18,10 @@ steps:
   - "./deploy-microservices.sh"
   - ${_PROJECT_ID}
   - ${_CLUSTER_LABEL}
+  - {_MONOLITH_SERVICE}
   waitFor:
   - "deploy-monolith"
 substitutions:
   _PROJECT_ID: ""
   _CLUSTER_LABEL: ""
+  _MONOLITH_SERVICE: ""

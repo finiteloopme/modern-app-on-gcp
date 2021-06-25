@@ -9,6 +9,7 @@ steps:
   - "./remove-microservices.sh"
   - ${_PROJECT_ID}
   - ${_CLUSTER_LABEL}
+  - ${_MONOLITH_SERVICE}
   waitFor:
   - "clone-repo"
 - id: "remove-monolith"
@@ -17,9 +18,11 @@ steps:
   - "./remove-monolith-in-asm.sh"
   - ${_PROJECT_ID}
   - ${_CLUSTER_LABEL}
+  - ${_MONOLITH_SERVICE}
   waitFor:
   - "remove-microservices"
 substitutions:
   _PROJECT_ID: ""
   _CLUSTER_LABEL: ""
+  _MONOLITH_SERVICE: ""
 

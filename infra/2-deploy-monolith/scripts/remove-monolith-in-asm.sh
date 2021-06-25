@@ -3,7 +3,7 @@
 # export PROJECT_ID=${gcloud config get-value project}
 export PROJECT_ID=${1}
 
-export WORKLOAD_NAME=ledger-monolith
+export WORKLOAD_NAME=${3}
 export WORKLOAD_VERSION=v0.3
 export WORKLOAD_SERVICE_ACCOUNT=$(gcloud projects list --filter="id=${PROJECT_ID}" --format="value(project_number)")-compute@developer.gserviceaccount.com
 echo "SA is:" ${WORKLOAD_SERVICE_ACCOUNT}
@@ -53,8 +53,31 @@ spec:
    serviceAccount: ${WORKLOAD_SERVICE_ACCOUNT}
 EOF
 
+cat > workload-service.yaml << EOF
+apiVersion: v1
+kind: Service
+metadata:
+ name: ${WORKLOAD_NAME}
+ namespace: default
+ labels:
+   asm_resource_type: VM
+spec:
+ ports:
+ - name: http
+   port: 8080
+   protocol: TCP
+   targetPort: 8080
+ - name: postgres
+   port: 5432
+   protocol: TCP
+   targetPort: 5432
+ selector:
+   app.kubernetes.io/name: ${WORKLOAD_NAME}
+EOF
+
 echo "Removing workload group entry from the cluster: " ${ASM_CLUSTER}
 kubectl delete -f workload-group.yaml
+kubectl apply -f workload-service.yaml
 
 # ./asm_vm create_gce_instance_template \
 # ${ASM_INSTANCE_TEMPLATE} \
@@ -77,7 +100,9 @@ gcloud compute instance-groups managed delete \
   ${INSTANCE_GROUP_NAME} \
   --zone=${INSTANCE_GROUP_ZONE} \
   --project=${PROJECT_ID} \
+  --quiet
 
 echo "Removing managed instance template: " ${ASM_INSTANCE_TEMPLATE}
 gcloud compute instance-templates delete \
-  ${ASM_INSTANCE_TEMPLATE}
+  ${ASM_INSTANCE_TEMPLATE} \
+  --quiet

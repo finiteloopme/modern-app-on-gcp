@@ -6,6 +6,7 @@ DEPLOY_PF=1-setup-platform
 DEPLOY_MONOLITH=2-deploy-monolith
 CLUSTER_LABEL=bank-of-anthos
 TF_PLAN=${GCP_PROJECT}-infra.tfplan
+MONOLITH_SERVICE=ledger-monolith
 enable-compute:
 	gcloud services enable compute.googleapis.com
 	
@@ -32,12 +33,10 @@ platform-clean: enable-compute
 	cd ${DEPLOY_PF}; terraform destroy -auto-approve
 
 monolith-deploy:
-	# cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
-	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-deploy.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL},_MONOLITH_SERVICE=${MONOLITH_SERVICE} ./scripts
 
 monolith-clean:
-	# cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_GCP_ZONE=${GCP_ZONE},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
-	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL} ./scripts
+	cd ${DEPLOY_MONOLITH}; gcloud builds submit --config ./cloudbuild-cleanup.yaml --substitutions=_PROJECT_ID=${GCP_PROJECT},_CLUSTER_LABEL=${CLUSTER_LABEL},_MONOLITH_SERVICE=${MONOLITH_SERVICE} ./scripts
 
 clean-tf:
 	rm -fr ./**/.terraform
