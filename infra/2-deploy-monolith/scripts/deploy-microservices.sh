@@ -3,7 +3,7 @@ export PROJECT_ID=${1}
 export CLUSTER_LABEL=${2}
 export MONOLITH_SERVICE=${3}
 cd bank-of-anthos
-ls -al
+# ls -al
 instance=$(gcloud container clusters list --filter="resourceLabels.workload ~ ${CLUSTER_LABEL}" --format="value[separator=','](name,location)")
 echo "Configuring the REGIONAL cluster: ${instance}"
 name="${instance%,*}";

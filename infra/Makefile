@@ -1,4 +1,5 @@
-GCP_PROJECT=kl-dev-scratchpad
+# GCP_PROJECT=kl-dev-scratchpad
+GCP_PROJECT=kunal-scratch
 GCP_REGION=us-central1
 GCP_ZONE=${GCP_REGION}-b
 SHARED_INFRA=0-shared-infra
@@ -24,7 +25,6 @@ infra-clean: enable-compute
 	cd ${SHARED_INFRA}; terraform destroy -auto-approve
 
 platform-deploy: enable-compute
-	# cd ${DEPLOY_PF}; gcloud beta builds submit --config ./scripts/cloudbuild.yaml ./scripts
 	cd ${DEPLOY_PF}; terraform init
 	cd ${DEPLOY_PF}; terraform plan -out=${TF_PLAN}
 	cd ${DEPLOY_PF}; terraform apply ${TF_PLAN}

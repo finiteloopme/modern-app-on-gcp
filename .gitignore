@@ -38,3 +38,4 @@ infra/2-deploy-monolith/scripts/asm_vm
 infra/2-deploy-monolith/scripts/bank-of-anthos*
 infra/2-deploy-monolith/scripts/workload-group.yaml
 infra/2-deploy-monolith/scripts/workload-service.yaml
+infra/2-deploy-monolith/scripts/config.yaml

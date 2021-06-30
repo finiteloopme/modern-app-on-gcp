@@ -18,10 +18,20 @@ export SOURCE_INSTANCE_TEMPLATE=$(gcloud compute instance-templates list --filte
 # export ASM_CLUSTER=asm-control-plane-cluster
 export ASM_CLUSTER_LABEL=${2}
 export GCP_REGION=us-central1
-export ASM_REVISION="asm-195-2"
+export ASM_REVISION="asm-196-1"
 
 export INSTANCE_GROUP_NAME=${WORKLOAD_NAME}-gce-asm
 export INSTANCE_GROUP_ZONE=${GCP_REGION}-b
+
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  echo "Installing dependencies..."
+  # apt-get install -y google-cloud-sdk
+  apt-get install -y google-cloud-sdk-kpt
+  apt-get install coreutils
+  apt-get install -y jq
+  # coreutils
+  echo "Done installing dependencies."
+fi
 
 instance=$(gcloud container clusters list --filter="resourceLabels.workload ~ ${ASM_CLUSTER_LABEL}" --format="value[separator=','](name,location)")
 echo "Configuring the REGIONAL cluster: ${instance}"
@@ -77,14 +87,6 @@ spec:
    app.kubernetes.io/name: ${WORKLOAD_NAME}
 EOF
 kubectl apply -f workload-service.yaml
-
-
-if [[ "$OSTYPE" != "darwin"* ]]; then
-  echo "Installing dependencies..."
-  apt-get install -y google-cloud-sdk-kpt
-  apt-get install -y awk grep jq kubectl printf tail tr curl
-  echo "Done installing dependencies."
-fi
 
 ./asm_vm create_gce_instance_template \
 ${ASM_INSTANCE_TEMPLATE} \
