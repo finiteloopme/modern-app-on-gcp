@@ -18,7 +18,8 @@ export SOURCE_INSTANCE_TEMPLATE=$(gcloud compute instance-templates list --filte
 # export ASM_CLUSTER=asm-control-plane-cluster
 export ASM_CLUSTER_LABEL=${2}
 export GCP_REGION=us-central1
-export ASM_REVISION="asm-196-1"
+# export ASM_REVISION="asm-196-2"
+export ASM_REVISION="asm-1102-3"
 
 export INSTANCE_GROUP_NAME=${WORKLOAD_NAME}-gce-asm
 export INSTANCE_GROUP_ZONE=${GCP_REGION}-b
@@ -27,9 +28,9 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
   echo "Installing dependencies..."
   # apt-get install -y google-cloud-sdk
   apt-get install -y google-cloud-sdk-kpt
-  apt-get install coreutils
+  apt-get install -y coreutils
   apt-get install -y jq
-  # coreutils
+  apt-get install -y ruby
   echo "Done installing dependencies."
 fi
 
@@ -44,7 +45,10 @@ export ASM_CLUSTER=${name}
 
 kubectl create ns ${WORKLOAD_NAMESPACE}
 kubectl label ns ${WORKLOAD_NAMESPACE} istio-injection- istio.io/rev=${ASM_REVISION} --overwrite
-curl https://storage.googleapis.com/csm-artifacts/asm/asm_vm_1.9 > asm_vm
+# ASM version = 1.9
+# curl https://storage.googleapis.com/csm-artifacts/asm/asm_vm_1.9 > asm_vm
+# ASM version = 1.10
+curl https://storage.googleapis.com/csm-artifacts/asm/asm_vm_1.10 > asm_vm
 chmod +x asm_vm
 
 cat > workload-group.yaml <<EOF

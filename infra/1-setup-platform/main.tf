@@ -28,15 +28,18 @@ module "gce_template" {
   }
 }
 
-module "asm"{
-  source                = "git::https://github.com/finiteloopme/tf-modules-argolis.git//modules/asm"
-  project_id            = var.project_id
-  # TODO: Hard coding the name of the cluster for ASM deployment.
-  # Need to handle this a better way
-  gke_cluster           = "bank-of-anthos-cluster"
-  gke_location          = var.gcp_region
+# module "asm"{
+#   # for_each              = {for gke_cluster in module.gke-instance: gke_cluster.name => gke_cluster_instance}
+#   for_each              = module.gke-instance
+#   source                = "git::https://github.com/finiteloopme/tf-modules-argolis.git//modules/asm"
+#   project_id            = var.project_id
+#   # TODO: Hard coding the name of the cluster for ASM deployment.
+#   # Need to handle this a better way
+#   # gke_cluster           = "bank-of-anthos-cluster"
+#   gke_cluster           = each.value.gke-instance
+#   gke_location          = var.gcp_region
 
-  depends_on            = [
-    module.gke-instance
-  ]
-}
+#   # depends_on            = [
+#   #   module.gke-instance
+#   # ]
+# }
