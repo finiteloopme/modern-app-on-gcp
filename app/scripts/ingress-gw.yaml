@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bank-of-anthos-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bank-of-anthos-frontend
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bank-of-anthos-gateway
+  http:
+  # - match:
+  #   - uri:
+  #       exact: /
+  #   - uri:
+  #       exact: /deposit
+  #   - uri:
+  #       exact: /home
+  #   - uri:
+  #       exact: /login
+  #   - uri:
+  #       exact: /logout
+  #   - uri:
+  #       exact: /payment
+  #   - uri:
+  #       exact: /ready
+  #   - uri:
+  #       exact: /signup
+  #   - uri:
+  #       exact: /version
+  - route:
+    - destination:
+        host: frontend
+        port:
+          number: 8080
